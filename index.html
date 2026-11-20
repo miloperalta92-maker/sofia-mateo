@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuestra Boda — Sofía & Mateo</title>
+    <!-- Tailwind CSS para diseño responsivo limpio -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tipografías elegantes de Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Great+Vibes&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Variables de tema: Modo Perla (Claro) por defecto y Modo Noir (Oscuro) */
+        :root {
+            --bg-outer: #ebe5dc;
+            --bg-card: #fcfaf7;
+            --bg-secondary: #f4efe6;
+            --text-primary: #2d2926;
+            --text-secondary: #6e655f;
+            --accent-gold: #b89558;
+            --accent-gold-light: #d9c298;
+            --border-color: rgba(184, 149, 88, 0.28);
+            --hero-overlay: linear-gradient(180deg, rgba(252,250,247,0.18) 0%, rgba(28,24,21,0.55) 60%, rgba(28,24,21,0.88) 100%);
+        }
+
+        body.theme-noir {
+            --bg-outer: #09090b;
+            --bg-card: #121215;
+            --bg-secondary: #1a1a1f;
+            --text-primary: #f5f0e6;
+            --text-secondary: #a89f91;
+            --accent-gold: #d4af37;
+            --accent-gold-light: #f3e5ab;
+            --border-color: rgba(212, 175, 55, 0.3);
+            --hero-overlay: linear-gradient(180deg, rgba(18,18,21,0.25) 0%, rgba(18,18,21,0.65) 60%, #121215 100%);
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-outer);
+            color: var(--text-primary);
+            transition: background-color 0.4s ease, color 0.4s ease;
+            margin: 0;
+            padding: 0;
+        }
+
+        .font-serif-editorial {
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        .font-script {
+            font-family: 'Great Vibes', cursive;
+        }
+
+        /* Contenedor tipo teléfono centrado en pantallas grandes */
+        .invitation-shell {
+            max-width: 480px;
+            margin: 0 auto;
+            background-color: var(--bg-card);
+            min-height: 100vh;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.18);
+            position: relative;
+            overflow-x: hidden;
+            transition: background-color 0.4s ease;
+        }
+
+        .section-alt {
+            background-color: var(--bg-secondary);
+            transition: background-color 0.4s ease;
+        }
+
+        .gold-text {
+            color: var(--accent-gold);
+        }
+
+        .gold-border {
+            border-color: var(--border-color);
+        }
+
+        .btn-gold {
+            background-color: var(--accent-gold);
+            color: #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        .btn-gold:hover {
+            filter: brightness(1.08);
+            transform: translateY(-1px);
+        }
+
+        .btn-outline-gold {
+            border: 1px solid var(--accent-gold);
+            color: var(--accent-gold);
+            background: transparent;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-gold:hover {
+            background-color: var(--accent-gold);
+            color: #ffffff;
+        }
+
+        /* Animación suave al hacer scroll */
+        .reveal {
+            opacity: 0;
+            transform: translateY(22px);
+            transition: all 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Animación pulso botón música */
+        @keyframes pulseRing {
+            0% { transform: scale(0.95); opacity: 0.7; }
+            70% { transform: scale(1.35); opacity: 0; }
+            100% { transform: scale(1.35); opacity: 0; }
+        }
+
+        .music-playing::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 9999px;
+            border: 2px solid var(--accent-gold);
+            animation: pulseRing 1.8s infinite;
+        }
+
+        /* Arco decorativo en portada */
+        .hero-arch {
+            border: 1px solid rgba(255, 255, 255, 0.45);
+            border-radius: 200px 200px 16px 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="invitation-shell" id="appShell">
+
+        <!-- BARRA SUPERIOR FLOTANTE: Cambio de Estilo Demo (Perla / Noir) y Música -->
+        <div class="fixed top-3 left-0 right-0 z-50 max-w-[480px] mx-auto px-4 flex justify-between items-center pointer-events-none">
+            <!-- Selector de tema para enseñar al cliente dos estilos en vivo -->
+            <button id="themeToggleBtn" onclick="toggleTheme()" class="pointer-events-auto flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium shadow-md backdrop-blur-md bg-black/50 text-white border border-white/25 hover:bg-black/70 transition">
+                <span id="themeIcon">🌙</span>
+                <span id="themeLabel">Estilo Noir</span>
+            </button>
+
+            <!-- Botón de Música Romántica -->
+            <button id="musicBtn" onclick="toggleMusic()" aria-label="Reproducir o pausar música" class="pointer-events-auto relative w-10 h-10 rounded-full flex items-center justify-center shadow-lg backdrop-blur-md bg-black/50 text-white border border-white/30 hover:scale-105 transition">
+                <svg id="iconPlay" class="w-4 h-4 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z"/>
+                </svg>
+                <svg id="iconPause" class="w-4 h-4 hidden" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                </svg>
+            </button>
+        </div>
+
+        <!-- 1. PORTADA / HERO A PANTALLA COMPLETA -->
+        <header class="relative h-[92vh] min-h-[620px] flex flex-col justify-between items-center text-center px-6 pt-16 pb-10 text-white overflow-hidden">
+            <!-- Imagen de fondo con respaldo elegante si falla la red -->
+            <img 
+                src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=900&q=80" 
+                alt="Sofía y Mateo"
+                onerror="this.style.display='none'"
+                class="absolute inset-0 w-full h-full object-cover object-center scale-105"
+            >
+            <!-- Fondo de respaldo degradado -->
+            <div class="absolute inset-0 -z-10 bg-gradient-to-b from-[#5e4d3b] via-[#3a2f25] to-[#1c1713]"></div>
+            <!-- Filtro oscuro suave para legibilidad -->
+            <div class="absolute inset-0" style="background: var(--hero-overlay);"></div>
+
+            <!-- Marco tipo arco editorial -->
+            <div class="relative z-10 w-full h-full hero-arch flex flex-col justify-between items-center px-5 py-8">
+                <div class="mt-2">
+                    <p class="text-[11px] tracking-[0.35em] uppercase text-white/90 font-medium">¡Nos Casamos!</p>
+                    <div class="w-10 h-[1px] bg-white/50 mx-auto mt-3"></div>
+                </div>
+
+                <!-- Nombres de los novios -->
+                <div class="my-auto">
+                    <h1 class="font-script text-6xl sm:text-7xl text-white drop-shadow-md leading-tight">
+                        Sofía
+                    </h1>
+                    <p class="font-serif-editorial italic text-2xl text-[#e6cfa3] my-1">&amp;</p>
+                    <h1 class="font-script text-6xl sm:text-7xl text-white drop-shadow-md leading-tight">
+                        Mateo
+                    </h1>
+                </div>
+
+                <!-- Fecha destacada -->
+                <div class="w-full">
+                    <p class="font-serif-editorial text-xl tracking-[0.22em] text-[#f3e5ab] font-semibold">
+                        12 · 12 · 2026
+                    </p>
+                    <p class="text-xs tracking-[0.2em] uppercase text-white/85 mt-1">
+                        Quillacollo · Cochabamba
+                    </p>
+                    <!-- Indicador deslizar -->
+                    <div class="mt-6 animate-bounce opacity-80">
+                        <svg class="w-5 h-5 mx-auto text-white" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- BANNER PERSONALIZADO SI EL LINK TRAE NOMBRE DE INVITADO (?invitado=...) -->
+        <div id="guestBanner" class="hidden px-6 pt-8">
+            <div class="rounded-2xl border gold-border section-alt p-5 text-center shadow-sm">
+                <p class="text-[11px] uppercase tracking-[0.25em] gold-text font-semibold">Invitación Especial Para</p>
+                <h2 id="guestNameDisplay" class="font-serif-editorial text-2xl font-bold mt-1">Familia Pérez</h2>
+                <p class="text-xs mt-1.5 opacity-80">Hemos reservado <strong id="guestPassesDisplay" class="gold-text">2 pases</strong> en su honor</p>
+            </div>
+        </div>
+
+        <!-- 2. FRASE ROMÁNTICA Y BIENVENIDA -->
+        <section class="px-7 py-12 text-center reveal">
+            <!-- Ornamento floral minimalista SVG -->
+            <svg class="w-10 h-10 mx-auto mb-4 gold-text opacity-85" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M32 54V22M32 36C24 36 18 30 18 22C26 22 32 28 32 36ZM32 30C40 30 46 24 46 16C38 16 32 22 32 30ZM32 22C28 15 30 8 32 6C34 8 36 15 32 22Z" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <p class="font-serif-editorial italic text-xl leading-relaxed" style="color: var(--text-primary);">
+                “Hay momentos en la vida que son especiales por sí solos, pero compartirlos con las personas que queremos los convierte en inolvidables.”
+            </p>
+            <div class="w-14 h-[1px] mx-auto mt-6" style="background-color: var(--accent-gold);"></div>
+        </section>
+
+        <!-- 3. CUENTA REGRESIVA EN TIEMPO REAL -->
+        <section class="section-alt px-6 py-11 text-center border-y gold-border reveal">
+            <p class="text-[11px] uppercase tracking-[0.28em] gold-text font-semibold">Falta muy poco</p>
+            <h2 class="font-serif-editorial text-3xl font-semibold mt-1 mb-6">Cuenta Regresiva</h2>
+
+            <div class="grid grid-cols-4 gap-2.5 max-w-sm mx-auto">
+                <div class="rounded-2xl p-3 border gold-border shadow-sm" style="background-color: var(--bg-card);">
+                    <span id="cd-days" class="font-serif-editorial text-3xl font-bold block gold-text">00</span>
+                    <span class="text-[10px] uppercase tracking-wider opacity-75">Días</span>
+                </div>
+                <div class="rounded-2xl p-3 border gold-border shadow-sm" style="background-color: var(--bg-card);">
+                    <span id="cd-hours" class="font-serif-editorial text-3xl font-bold block gold-text">00</span>
+                    <span class="text-[10px] uppercase tracking-wider opacity-75">Horas</span>
+                </div>
+                <div class="rounded-2xl p-3 border gold-border shadow-sm" style="background-color: var(--bg-card);">
+                    <span id="cd-mins" class="font-serif-editorial text-3xl font-bold block gold-text">00</span>
+                    <span class="text-[10px] uppercase tracking-wider opacity-75">Min</span>
+                </div>
+                <div class="rounded-2xl p-3 border gold-border shadow-sm" style="background-color: var(--bg-card);">
+                    <span id="cd-secs" class="font-serif-editorial text-3xl font-bold block gold-text">00</span>
+                    <span class="text-[10px] uppercase tracking-wider opacity-75">Seg</span>
+                </div>
+            </div>
+            <p class="text-xs mt-5 opacity-75">Sábado, 12 de Diciembre de 2026 · 17:00 hrs</p>
+        </section>
+
+        <!-- 4. BENDICIÓN DE PADRES Y PADRINOS -->
+        <section class="px-6 py-12 text-center reveal">
+            <p class="text-[11px] uppercase tracking-[0.28em] gold-text font-semibold">Con la bendición de</p>
+            <h2 class="font-serif-editorial text-3xl font-semibold mt-1 mb-8">Nuestros Padres</h2>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm">
+                <div class="p-4 rounded-2xl border gold-border">
+                    <p class="text-[10px] uppercase tracking-[0.2em] gold-text font-semibold mb-2">Padres de la Novia</p>
+                    <p class="font-serif-editorial text-lg font-medium">Carlos Mendoza Vargas</p>
+                    <p class="font-serif-editorial text-lg font-medium">Elena Ríos de Mendoza</p>
+                </div>
+                <div class="p-4 rounded-2xl border gold-border">
+                    <p class="text-[10px] uppercase tracking-[0.2em] gold-text font-semibold mb-2">Padres del Novio</p>
+                    <p class="font-serif-editorial text-lg font-medium">Roberto Salazar Torrico</p>
+                    <p class="font-serif-editorial text-lg font-medium">Patricia Guzmán de Salazar</p>
+                </div>
+            </div>
+
+            <div class="mt-6 p-4 rounded-2xl section-alt border gold-border">
+                <p class="text-[10px] uppercase tracking-[0.2em] gold-text font-semibold mb-1.5">Nuestros Padrinos</p>
+                <p class="font-serif-editorial text-lg font-medium">Alejandro Villarroel &amp; Gabriela Rocha</p>
+            </div>
+        </section>
+
+        <!-- 5. CEREMONIA Y RECEPCIÓN (CON GOOGLE MAPS) -->
+        <section class="section-alt px-6 py-12 text-center border-y gold-border reveal">
+            <p class="text-[11px] uppercase tracking-[0.28em] gold-text font-semibold">Dónde &amp; Cuándo</p>
+            <h2 class="font-serif-editorial text-3xl font-semibold mt-1 mb-8">Ceremonia y Recepción</h2>
+
+            <div class="space-y-6">
+                <!-- Tarjeta Ceremonia -->
+                <div class="rounded-2xl p-6 border gold-border shadow-sm" style="background-color: var(--bg-card);">
+                    <div class="w-12 h-12 rounded-full mx-auto mb-3 flex items-center justify-center border gold-border gold-text">
+                        <!-- Ícono Iglesia SVG -->
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v4m-2-2h4m-2 2l-6 4.5V21h12v-9.5L12 7zm0 14v-5a2 2 0 10-4 0v5h4z" />
+                        </svg>
+                    </div>
+                    <h3 class="font-serif-editorial text-2xl font-bold">Ceremonia Religiosa</h3>
+                    <p class="text-sm font-medium mt-1 gold-text">17:00 Hrs</p>
+                    <p class="text-sm font-semibold mt-3">Templo de San Ildefonso</p>
+                    <p class="text-xs opacity-75 mt-1">Plaza Principal 14 de Septiembre, Quillacollo</p>
+                    <a href="https://maps.google.com/?q=Templo+San+Ildefonso+Quillacollo+Cochabamba" target="_blank" rel="noopener noreferrer" class="btn-gold inline-flex items-center gap-2 mt-5 px-5 py-2.5 rounded-full text-xs font-medium tracking-wider uppercase shadow-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                        </svg>
+                        Ver en Google Maps
+                    </a>
+                </div>
+
+                <!-- Tarjeta Recepción -->
+                <div class="rounded-2xl p-6 border gold-border shadow-sm" style="background-color: var(--bg-card);">
+                    <div class="w-12 h-12 rounded-full mx-auto mb-3 flex items-center justify-center border gold-border gold-text">
+                        <!-- Ícono Copas Brindis SVG -->
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 21h8m-4-4v4m-5-16h10l-1 7a4 4 0 01-8 0L7 5z" />
+                        </svg>
+                    </div>
+                    <h3 class="font-serif-editorial text-2xl font-bold">Recepción Social</h3>
+                    <p class="text-sm font-medium mt-1 gold-text">19:30 Hrs</p>
+                    <p class="text-sm font-semibold mt-3">Salón de Eventos “Los Jardines”</p>
+                    <p class="text-xs opacity-75 mt-1">Av. Blanco Galindo Km 11, Quillacollo</p>
+                    <a href="https://maps.google.com/?q=Quillacollo+Cochabamba+Bolivia" target="_blank" rel="noopener noreferrer" class="btn-gold inline-flex items-center gap-2 mt-5 px-5 py-2.5 rounded-full text-xs font-medium tracking-wider uppercase shadow-sm">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+                        </svg>
+                        Ver en Google Maps
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. ITINERARIO DEL EVENTO -->
+        <section class="px-6 py-12 reveal">
+            <div class="text-center mb-8">
+                <p class="text-[11px] uppercase tracking-[0.28em] gold-text font-semibold">Momentos Especiales</p>
+                <h2 class="font-serif-editorial text-3xl font-semibold mt-1">Itinerario</h2>
+            </div>
+
+            <div class="relative max-w-xs mx-auto pl-6 border-l gold-border space-y-6">
+                <div class="relative">
+                    <span class="w-3 h-3 rounded-full absolute -left-[30px] top-1.5" style="background-color: var(--accent-gold);"></span>
+                    <p class="text-xs font-semibold gold-text">17:00 HRS</p>
+                    <h4 class="font-serif-editorial text-xl font-bold">Ceremonia Religiosa</h4>
+                    <p class="text-xs opacity-75">Templo de San Ildefonso</p>
+                </div>
+                <div class="relative">
+                    <span class="w-3 h-3 rounded-full absolute -left-[30px] top-1.5" style="background-color: var(--accent-gold);"></span>
+                    <p class="text-xs font-semibold gold-text">19:30 HRS</p>
+                    <h4 class="font-serif-editorial text-xl font-bold">Recepción y Cóctel</h4>
+                    <p class="text-xs opacity-75">Bienvenida a los invitados</p>
+                </div>
+                <div class="relative">
+                    <span class="w-3 h-3 rounded-full absolute -left-[30px] top-1.5" style="background-color: var(--accent-gold);"></span>
+                    <p class="text-xs font-semibold gold-text">20:30 HRS</p>
+                    <h4 class="font-serif-editorial text-xl font-bold">Brindis y Vals de los Novios</h4>
+                    <p class="text-xs opacity-75">Nuestro primer baile juntos</p>
+                </div>
+                <div class="relative">
+                    <span class="w-3 h-3 rounded-full absolute -left-[30px] top-1.5" style="background-color: var(--accent-gold);"></span>
+                    <p class="text-xs font-semibold gold-text">21:30 HRS</p>
+                    <h4 class="font-serif-editorial text-xl font-bold">Cena de Gala</h4>
+                    <p class="text-xs opacity-75">Banquete y torta nupcial</p>
+                </div>
+                <div class="relative">
+                    <span class="w-3 h-3 rounded-full absolute -left-[30px] top-1.5" style="background-color: var(--accent-gold);"></span>
+                    <p class="text-xs font-semibold gold-text">22:30 HRS</p>
+                    <h4 class="font-serif-editorial text-xl font-bold">¡A Bailar!</h4>
+                    <p class="text-xs opacity-75">Música en vivo y hora loca</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 7. CÓDIGO DE VESTIMENTA Y REGALOS -->
+        <section class="section-alt px-6 py-12 text-center border-y gold-border space-y-8 reveal">
+            <!-- Código de vestimenta -->
+            <div class="rounded-2xl p-6 border gold-border" style="background-color: var(--bg-card);">
+                <p class="text-[11px] uppercase tracking-[0.28em] gold-text font-semibold">Dress Code</p>
+                <h3 class="font-serif-editorial text-2xl font-bold mt-1">Formal / Etiqueta</h3>
+                <p class="text-xs opacity-80 mt-2 leading-relaxed">
+                    Agradecemos reservar el color <strong>blanco y marfil</strong> exclusivamente para la novia.
+                </p>
+                <div class="flex justify-center gap-2.5 mt-4">
+                    <span class="w-6 h-6 rounded-full border border-black/10 bg-[#2c3e35]" title="Verde Bosque"></span>
+                    <span class="w-6 h-6 rounded-full border border-black/10 bg-[#8c6d46]" title="Bronce"></span>
+                    <span class="w-6 h-6 rounded-full border border-black/10 bg-[#1f2937]" title="Azul Noche"></span>
+                    <span class="w-6 h-6 rounded-full border border-black/10 bg-[#7c2d36]" title="Borgoña"></span>
+                </div>
+            </div>
+
+            <!-- Mesa de Regalos / Lluvia de Sobres -->
+            <div class="rounded-2xl p-6 border gold-border" style="background-color: var(--bg-card);">
+                <p class="text-[11px] uppercase tracking-[0.28em] gold-text font-semibold">Detalle de Amor</p>
+                <h3 class="font-serif-editorial text-2xl font-bold mt-1">Sugerencia de Regalos</h3>
+                <p class="text-xs opacity-80 mt-2 leading-relaxed">
+                    Tu presencia es nuestro mejor regalo. Si deseas tener un detalle con nosotros, contaremos con <strong>lluvia de sobres</strong> en el salón o transferencia directa:
+                </p>
+
+                <div class="mt-4 p-4 rounded-xl section-alt border gold-border text-xs space-y-1">
+                    <p class="font-semibold">Banco Nacional de Bolivia (BNB)</p>
+                    <p class="opacity-80">Titular: Sofía Mendoza Ríos</p>
+                    <p class="font-mono text-sm font-bold pt-1" id="accountNumber">350-01928394</p>
+                    <button onclick="copyAccount()" id="copyBtn" class="btn-outline-gold mt-2.5 px-4 py-1.5 rounded-full text-[11px] font-medium uppercase tracking-wider">
+                        Copiar N° de Cuenta
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. CONFIRMACIÓN DE ASISTENCIA (RSVP INTERACTIVO) -->
+        <section class="px-6 py-12 reveal" id="rsvpSection">
+            <div class="text-center mb-6">
+                <p class="text-[11px] uppercase tracking-[0.28em] gold-text font-semibold">Te Esperamos</p>
+                <h2 class="font-serif-editorial text-3xl font-semibold mt-1">Confirmar Asistencia</h2>
+                <p class="text-xs opacity-75 mt-1">Por favor confirma tu asistencia antes del 1 de Dicimbre</p>
+            </div>
+
+            <form id="rsvpForm" onsubmit="handleRsvpSubmit(event)" class="rounded-2xl p-6 border gold-border section-alt space-y-4 shadow-sm">
+                <div>
+                    <label class="block text-xs font-medium mb-1">Nombre completo o Familia *</label>
+                    <input type="text" id="rsvpName" required placeholder="Ej. Familia Torrico" class="w-full px-3.5 py-2.5 rounded-xl text-sm border gold-border focus:outline-none" style="background-color: var(--bg-card); color: var(--text-primary);">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium mb-1">¿Nos acompañarás? *</label>
+                    <select id="rsvpStatus" class="w-full px-3.5 py-2.5 rounded-xl text-sm border gold-border focus:outline-none" style="background-color: var(--bg-card); color: var(--text-primary);">
+                        <option value="Sí, asistiré con gusto">Sí, asistiré con gusto ✨</option>
+                        <option value="Lamentablemente no podré asistir">Lamentablemente no podré asistir</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium mb-1">Cantidad de pases a utilizar</label>
+                    <select id="rsvpPasses" class="w-full px-3.5 py-2.5 rounded-xl text-sm border gold-border focus:outline-none" style="background-color: var(--bg-card); color: var(--text-primary);">
+                        <option value="1">1 pase</option>
+                        <option value="2" selected>2 pases</option>
+                        <option value="3">3 pases</option>
+                        <option value="4">4 pases</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium mb-1">Mensaje o buenos deseos (opcional)</label>
+                    <textarea id="rsvpMessage" rows="2" placeholder="¡Muchas felicidades a los novios!" class="w-full px-3.5 py-2.5 rounded-xl text-sm border gold-border focus:outline-none" style="background-color: var(--bg-card); color: var(--text-primary);"></textarea>
+                </div>
+
+                <div class="pt-2 space-y-2.5">
+                    <button type="submit" class="btn-gold w-full py-3 rounded-full text-xs font-semibold uppercase tracking-widest shadow-md">
+                        Confirmar en la Web
+                    </button>
+                    <button type="button" onclick="confirmViaWhatsapp()" class="btn-outline-gold w-full py-2.5 rounded-full text-xs font-semibold uppercase tracking-wider">
+                        Enviar Confirmación por WhatsApp
+                    </button>
+                </div>
+            </form>
+
+            <!-- Mensaje de confirmación exitosa -->
+            <div id="rsvpSuccessBox" class="hidden mt-5 rounded-2xl p-5 border gold-border text-center" style="background-color: var(--bg-card);">
+                <p class="text-2xl mb-1">💌</p>
+                <h4 class="font-serif-editorial text-2xl font-bold gold-text">¡Confirmación Registrada!</h4>
+                <p id="rsvpSuccessText" class="text-xs mt-1.5 opacity-85"></p>
+                <button onclick="resetRsvpDemo()" class="mt-3 text-[11px] underline gold-text">Probar otra confirmación</button>
+            </div>
+        </section>
+
+        <!-- PIE DE PÁGINA -->
+        <footer class="section-alt px-6 py-10 text-center border-t gold-border">
+            <p class="font-script text-4xl gold-text">Sofía &amp; Mateo</p>
+            <p class="text-[11px] tracking-[0.25em] uppercase opacity-70 mt-2">12 · 12 · 2026</p>
+            <p class="text-[10px] opacity-50 mt-6">
+
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        // 1. CUENTA REGRESIVA HACIA EL 15 DE MAYO DE 2027 A LAS 17:00
+        const weddingDate = new Date("2026-12-12T17:00:00").getTime();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const diff = weddingDate - now;
+
+            if (diff <= 0) {
+                document.getElementById("cd-days").textContent = "00";
+                document.getElementById("cd-hours").textContent = "00";
+                document.getElementById("cd-mins").textContent = "00";
+                document.getElementById("cd-secs").textContent = "00";
+                return;
+            }
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById("cd-days").textContent = String(days).padStart(2, "0");
+            document.getElementById("cd-hours").textContent = String(hours).padStart(2, "0");
+            document.getElementById("cd-mins").textContent = String(mins).padStart(2, "0");
+            document.getElementById("cd-secs").textContent = String(secs).padStart(2, "0");
+        }
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // 2. CAMBIO DE ESTILO DEMO: PERLA (CLARO) / NOIR (OSCURO)
+        function toggleTheme() {
+            const isNoir = document.body.classList.toggle("theme-noir");
+            document.getElementById("themeIcon").textContent = isNoir ? "☀️" : "🌙";
+            document.getElementById("themeLabel").textContent = isNoir ? "Estilo Perla" : "Estilo Noir";
+        }
+
+        // 3. MÚSICA AMBIENTAL ROMÁNTICA SINTETIZADA (SIN DEPENDER DE ARCHIVOS EXTERNOS)
+        let audioCtx = null;
+        let isPlaying = false;
+        let musicInterval = null;
+
+        // Melodía suave estilo caja musical / arpa (Canon en Re simplificado)
+        const melodyNotes = [
+            587.33, 440.00, 493.88, 369.99,
+            392.00, 293.66, 392.00, 440.00,
+            587.33, 659.25, 739.99, 659.25,
+            587.33, 493.88, 440.00, 392.00
+        ];
+        let noteIndex = 0;
+
+        function playSoftNote(freq) {
+            if (!audioCtx) return;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+            gain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.06, audioCtx.currentTime + 0.08);
+            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.4);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start();
+            osc.stop(audioCtx.currentTime + 1.45);
+        }
+
+        function toggleMusic() {
+            const btn = document.getElementById("musicBtn");
+            const iconPlay = document.getElementById("iconPlay");
+            const iconPause = document.getElementById("iconPause");
+
+            if (!isPlaying) {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtx.state === "suspended") {
+                    audioCtx.resume();
+                }
+                isPlaying = true;
+                btn.classList.add("music-playing");
+                iconPlay.classList.add("hidden");
+                iconPause.classList.remove("hidden");
+
+                playSoftNote(melodyNotes[noteIndex]);
+                noteIndex = (noteIndex + 1) % melodyNotes.length;
+
+                musicInterval = setInterval(() => {
+                    playSoftNote(melodyNotes[noteIndex]);
+                    noteIndex = (noteIndex + 1) % melodyNotes.length;
+                }, 950);
+            } else {
+                isPlaying = false;
+                clearInterval(musicInterval);
+                btn.classList.remove("music-playing");
+                iconPlay.classList.remove("hidden");
+                iconPause.classList.add("hidden");
+            }
+        }
+
+        // 4. LECTURA DE INVITADO Y PASES DESDE EL LINK (?invitado=Nombre&pases=3)
+        function initPersonalization() {
+            const params = new URLSearchParams(window.location.search);
+            const guest = params.get("invitado");
+            const passes = parseInt(params.get("pases"), 10);
+
+            if (guest) {
+                document.getElementById("guestBanner").classList.remove("hidden");
+                document.getElementById("guestNameDisplay").textContent = guest;
+                document.getElementById("rsvpName").value = guest;
+            }
+
+            if (passes && passes > 0) {
+                document.getElementById("guestPassesDisplay").textContent = passes === 1 ? "1 pase" : `${passes} pases`;
+                const select = document.getElementById("rsvpPasses");
+                select.innerHTML = "";
+                for (let i = 1; i <= passes; i++) {
+                    const opt = document.createElement("option");
+                    opt.value = i;
+                    opt.textContent = i === 1 ? "1 pase" : `${i} pases`;
+                    if (i === passes) opt.selected = true;
+                    select.appendChild(opt);
+                }
+            }
+        }
+        initPersonalization();
+
+        // 5. COPIAR NÚMERO DE CUENTA BANCARIA SIN USAR ALERT()
+        function copyAccount() {
+            const text = document.getElementById("accountNumber").textContent;
+            const tempInput = document.createElement("input");
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+
+            const btn = document.getElementById("copyBtn");
+            btn.textContent = "¡Número Copiado!";
+            setTimeout(() => {
+                btn.textContent = "Copiar N° de Cuenta";
+            }, 2200);
+        }
+
+        // 6. CONFIRMACIÓN DE ASISTENCIA (EN PANTALLA Y POR WHATSAPP)
+        function handleRsvpSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById("rsvpName").value.trim();
+            const status = document.getElementById("rsvpStatus").value;
+            const passes = document.getElementById("rsvpPasses").value;
+
+            document.getElementById("rsvpForm").classList.add("hidden");
+            const box = document.getElementById("rsvpSuccessBox");
+            box.classList.remove("hidden");
+            document.getElementById("rsvpSuccessText").textContent =
+                `Gracias, ${name}. Registramos tu respuesta: "${status}" (${passes} ${passes === "1" ? "pase" : "pases"}).`;
+        }
+
+        function resetRsvpDemo() {
+            document.getElementById("rsvpForm").classList.remove("hidden");
+            document.getElementById("rsvpSuccessBox").classList.add("hidden");
+        }
+
+        function confirmViaWhatsapp() {
+            const name = document.getElementById("rsvpName").value.trim() || "Invitado";
+            const status = document.getElementById("rsvpStatus").value;
+            const passes = document.getElementById("rsvpPasses").value;
+            const msg = document.getElementById("rsvpMessage").value.trim();
+
+            let text = `¡Hola! Soy *${name}*. Confirmo mi respuesta para la boda de Sofía & Mateo:\n• *Asistencia:* ${status}\n• *Pases:* ${passes}`;
+            if (msg) text += `\n• *Mensaje:* ${msg}`;
+
+            // Abre WhatsApp con el mensaje armado listo para enviar
+            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
+        }
+
+        // 7. ANIMACIÓN SUAVE AL DESLIZAR
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add("visible");
+                }
+            });
+        }, { threshold: 0.12 });
+
+        document.querySelectorAll(".reveal").forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
